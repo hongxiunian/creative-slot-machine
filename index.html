@@ -86,8 +86,8 @@
 
         @media (max-width: 768px) {
             .container {
-                max-width: 88%;
-                /* 在手机上稍微收窄一点，增加两侧留白 */
+                max-width: 94%;
+                /* 放宽宽度限制，避免挤压 */
             }
 
             body {
@@ -98,7 +98,8 @@
 
             h1 {
                 font-size: 25px;
-                /* 手机端减小字号 */
+                white-space: nowrap;
+                /* 强制不换行 */
             }
 
             .emoji-icon {
