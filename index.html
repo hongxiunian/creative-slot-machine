@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创意老虎机 V5 | 双语版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        @font-face {
+            font-family: 'OPPO Sans';
+            src: url('https://cdn.jsdelivr.net/gh/oppo-sans/oppo-sans@main/fonts/OPPOSans-Regular.woff2') format('woff2'),
+                 url('https://cdn.jsdelivr.net/gh/oppo-sans/oppo-sans@main/fonts/OPPOSans-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'OPPO Sans';
+            src: url('https://cdn.jsdelivr.net/gh/oppo-sans/oppo-sans@main/fonts/OPPOSans-Bold.woff2') format('woff2'),
+                 url('https://cdn.jsdelivr.net/gh/oppo-sans/oppo-sans@main/fonts/OPPOSans-Bold.woff') format('woff');
+            font-weight: bold;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'OPPO Sans';
+            src: url('https://cdn.jsdelivr.net/gh/oppo-sans/oppo-sans@main/fonts/OPPOSans-Medium.woff2') format('woff2'),
+                 url('https://cdn.jsdelivr.net/gh/oppo-sans/oppo-sans@main/fonts/OPPOSans-Medium.woff') format('woff');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --bg-color: #FAFAFA;
+            --card-bg: #FFFFFF;
+            --text-color: #111111;
+            --accent-color: #000000;
+            --label-color: #999999;
+            --locked-indicator: #2D5BFF; /* 锁定时的蓝点 */
+            --instruction-color: #BBB;
+            --result-bg: #F0F0F0;
+            --border-color: #E5E5E5;
+            --copy-btn-bg: #E8E8E8;
+            --copy-btn-hover: #D8D8D8;
+            --footer-link-color: #999999;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1A1A1A;
+            --card-bg: #2D2D2D;
+            --text-color: #FFFFFF;
+            --accent-color: #FFFFFF;
+            --label-color: #999999;
+            --locked-indicator: #4A9EFF;
+            --instruction-color: #888;
+            --result-bg: #252525;
+            --border-color: #404040;
+            --copy-btn-bg: #3A3A3A;
+            --copy-btn-hover: #4A4A4A;
+            --footer-link-color: #999999;
+        }
+
+        body {
+            font-family: 'OPPO Sans', -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* --- 标题区域设计 --- */
+        .header {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        h1 {
+            font-size: 48px; /* 更大的标题 */
+            margin: 0 0 8px 0;
+            color: var(--text-color);
+            font-weight: 800;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* 图标和文字的间距 */
+        }
+
+        .emoji-icon {
+            font-size: 52px; /* 图标比文字略大一点 */
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--label-color);
+            text-transform: uppercase;
+            letter-spacing: 2px; /* 增加字间距，更有设计感 */
+            font-weight: 500;
+        }
+
+        /* --- 主题切换按钮 --- */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .theme-toggle {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] .theme-toggle:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- 使用说明区域 --- */
+        .instruction {
+            text-align: center;
+            margin-bottom: 30px; /* 和输入框拉开距离 */
+            width: 100%;
+            max-width: 100%;
+            padding: 0 10px;
+        }
+
+        .instruction p {
+            margin: 6px 0;       /* 调整行间距 */
+            font-size: 16px;     /* 更大的字体 */
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--label-color); /* 稍微深一点的颜色，中文和英文统一，支持主题切换 */
+        }
+
+        .instruction .en {
+            font-size: 14px;     /* 英文稍微小一点 */
+            font-family: 'OPPO Sans', sans-serif;
+            margin-bottom: 50px; /* 增加与下一行的间距 */
+            color: var(--label-color); /* 与中文相同的颜色，支持主题切换 */
+        }
+
+        /* --- 输入行样式 --- */
+        .slot-row {
+            position: relative;
+            margin-bottom: 18px;
+            padding: 0 10px;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .slot-row.is-user-defined {
+            border-bottom-color: var(--text-color);
+        }
+
+        /* 蓝色指示点 */
+        .indicator {
+            position: absolute;
+            left: -15px;
+            top: 55%; /* 稍微调整位置以对齐输入框 */
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--locked-indicator);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .slot-row.is-user-defined .indicator { opacity: 1; }
+
+        .slot-label {
+            font-size: 11px;
+            color: var(--label-color);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .slot-input {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-color);
+            border: none;
+            background: transparent;
+            width: 100%;
+            outline: none;
+            padding: 8px 0;
+            font-family: inherit;
+        }
+        
+        .slot-input::placeholder {
+            color: var(--label-color);
+            opacity: 0.5;
+            font-weight: 400;
+        }
+
+        /* --- 按钮组 (新布局) --- */
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 45px;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 18px;
+            border-radius: 10px;
+            transition: transform 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:active { transform: scale(0.98); }
+
+        /* 主按钮：生成 (现在在左边，且最大) */
+        .btn-generate {
+            background: var(--text-color);
+            color: var(--bg-color);
+            flex: 3; /* 占据 3/4 宽度 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        [data-theme="dark"] .btn-generate {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        }
+
+        /* 次按钮：清空 (现在在右边) */
+        .btn-reset {
+            background: var(--copy-btn-bg);
+            color: var(--label-color);
+            flex: 1; /* 占据 1/4 宽度 */
+        }
+        .btn-reset:hover { 
+            background: var(--copy-btn-hover); 
+            color: var(--text-color); 
+        }
+
+        /* 结果容器框 */
+        .result-container {
+            margin-top: 40px;
+            background-color: var(--result-bg);
+            border-radius: 12px;
+            padding: 24px 20px;
+            display: none; /* 默认隐藏，有内容时显示 */
+            transition: background-color 0.3s ease;
+        }
+
+        .result-container.has-content {
+            display: block;
+        }
+
+        /* 结果句子 */
+        .result-preview {
+            font-size: 14px;
+            color: var(--label-color);
+            text-align: center;
+            line-height: 1.6;
+            min-height: 24px;
+            margin-bottom: 16px;
+        }
+
+        .result-content {
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .copy-btn {
+            display: inline-block;
+            background: var(--copy-btn-bg);
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            color: var(--label-color);
+            cursor: pointer;
+            font-family: 'OPPO Sans', sans-serif;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--copy-btn-hover);
+            color: var(--text-color);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+
+        .copy-btn-wrapper {
+            text-align: center;
+        }
+
+        .copy-btn.copied {
+            background: #2D5BFF;
+            color: white;
+        }
+
+        /* --- 底部导航链接 --- */
+        .footer-link {
+            text-align: center;
+            margin-top: 100px;
+            margin-bottom: 30px;
+            padding-top: 40px;
+        }
+
+        .footer-link a {
+            color: var(--footer-link-color);
+            text-decoration: none;
+            font-size: 13px;
+            font-family: 'OPPO Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link a:hover {
+            color: var(--text-color);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" aria-label="切换主题">
+        <span id="theme-icon">🌙</span>
+    </button>
+
+    <div class="container">
+        
+        <div class="header">
+            <h1><span class="emoji-icon">🎰</span> 创意老虎机</h1>
+            <div class="subtitle">Creative Slot Machine</div>
+        </div>
+
+        <div class="instruction">
+            <p>输入即锁定。填入你的核心词，剩下的交给随机创意</p>
+            <p class="en">Type to lock. Define your keywords, let the system fill the void</p>
+        </div>
+
+        <div class="slot-row" id="row-1">
+            <div class="indicator"></div>
+            <div class="slot-label">形容词 / Style</div>
+            <input type="text" class="slot-input" id="input-1" placeholder="点击输入 或 随机生成..." oninput="handleInput(1)">
+        </div>
+        
+        <div class="slot-row" id="row-2">
+            <div class="indicator"></div>
+            <div class="slot-label">名词 / Object</div>
+            <input type="text" class="slot-input" id="input-2" placeholder="点击输入 或 随机生成..." oninput="handleInput(2)">
+        </div>
+
+        <div class="slot-row" id="row-4">
+            <div class="indicator"></div>
+            <div class="slot-label">状态 / Mood</div>
+            <input type="text" class="slot-input" id="input-4" placeholder="点击输入 或 随机生成..." oninput="handleInput(4)">
+        </div>
+
+        <div class="slot-row" id="row-3">
+            <div class="indicator"></div>
+            <div class="slot-label">动作 / Action</div>
+            <input type="text" class="slot-input" id="input-3" placeholder="点击输入 或 随机生成..." oninput="handleInput(3)">
+        </div>
+
+        <div class="slot-row" id="row-5">
+            <div class="indicator"></div>
+            <div class="slot-label">时间地点 / Context</div>
+            <input type="text" class="slot-input" id="input-5" placeholder="点击输入 或 随机生成..." oninput="handleInput(5)">
+        </div>
+
+        <div class="button-group">
+            <button class="btn-generate" onclick="spin()">
+                <span>🕹️</span> 生成创意 / Generate
+            </button>
+            
+            <button class="btn-reset" onclick="resetAll()">
+                清空 / Clear
+            </button>
+        </div>
+
+        <div class="result-container" id="result-container">
+            <div class="result-preview" id="full-sentence"></div>
+            <div class="copy-btn-wrapper">
+                <button class="copy-btn" id="copy-btn" onclick="copyResult()">📋 复制 / Copy</button>
+            </div>
+        </div>
+
+        <div class="footer-link">
+            <a href="https://kkbeast.art" target="_blank" rel="noopener noreferrer">@kk.beast</a>
+        </div>
+    </div>
+
+    <script>
+        // --- 主题切换功能 ---
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (currentTheme === 'dark') {
+                html.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // 页面加载时检查保存的主题
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            // 默认使用 light 主题
+            if (savedTheme === 'dark') {
+                html.setAttribute('data-theme', 'dark');
+                themeIcon.textContent = '☀️';
+            } else {
+                // 确保默认是 light 主题
+                html.removeAttribute('data-theme');
+                themeIcon.textContent = '🌙';
+                // 如果之前没有保存过主题，设置为 light
+                if (!savedTheme) {
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+        }
+
+        // 页面加载时初始化主题
+        initTheme();
+
+      // --- 🧠 旗舰版词库 (每组约120词，神出鬼没版) ---
+const data = {
+    // 1. Style / 形容词 (视觉材质、艺术风格、物理属性)
+    col1: [
+        "赛博朋克的", "黏糊糊的", "像素风的", "巨大的", "透明的", "发光的", "生锈的", "极简主义的", "故障风的", "充气材质的",
+        "孟菲斯风格的", "蒸汽波风格的", "满是苔藓的", "液态金属的", "低多边形的", "磨砂玻璃质感的", "霓虹色的", "黑白噪点的", "浮世绘风格的", "哥特式的",
+        "像乐高积木的", "毛茸茸的", "半透明塑料的", "烧焦的", "镀金的", "全息投影的", "水墨风的", "粗糙水泥的", "失焦模糊的", "高饱和度的",
+        "包豪斯风格的", "维多利亚时代的", "被压扁的", "悬浮的", "几何切割的", "流体的", "折纸风格的", "X光透视的", "粗线条漫画风的", "超写实的",
+        "克苏鲁风格的", "像果冻一样的", "正在腐烂的", "巴洛克式的", "放射性的", "像肥皂泡的", "真菌覆盖的", "迪斯科风格的", "像老式录像带的", "负片效果的",
+        "油腻的", "像内脏一样的", "看不见的", "二维化的", "四维空间的", "像糖果一样的", "重金属风格的", "粉末状的", "马赛克处理的", "像丝绸一样的",
+        "像陶瓷破碎的", "像眼球一样的", "像电路板的", "像数据流的", "像古希腊雕塑的", "像热成像的", "像扫描仪扫坏的", "像烟雾组成的", "像水银一样的",
+        "像深海生物的", "像拼贴画的", "像儿童涂鸦的", "像说明书插图的", "像塔罗牌的", "像显微镜下的", "像卫星地图的", "像乐谱的", "像二维码的", "像条形码的",
+        "像黑洞视界的", "像变色龙的", "像洋葱表皮的", "像鱼鳞的", "像泡沫塑料的", "像锡纸包裹的", "像融化的蜡的", "像干枯树枝的", "像彩色玻璃的", "像石膏像的",
+        "像气球狗材质的", "像防弹玻璃的", "像碳纤维的", "像丝袜材质的", "像便利贴的", "像报纸印刷的", "像纹身的", "像指纹的", "像 DNA 螺旋的", "像病毒模型的",
+        "像 8-bit 游戏的", "像 Windows 98 弹窗的", "像蓝屏死机的", "像 PPT 艺术字的", "像 emoji 的", "像 ASCII 码的", "像盲文的", "像心电图的", "像声波的", "像二维码的",
+        "重金属轰鸣的", "无政府主义朋克的", "末日般沉重的", "充满铆钉与皮革的", "狂躁失真的", "华丽且堕落的"
+    ],
+
+    // 2. Object / 名词 (角色、物体、生物、概念)
+    col2: [
+        // --- 原有基础词汇 (已去修饰词) ---
+        "蜗牛", "宇航员", "自动贩卖机", "大脑", "甜甜圈", "佛像", "电视机", "云朵", "眼球", "机械臂",
+        "水母", "招财猫", "霸王龙", "仙人掌", "马桶", "婴儿", "切片面包", "骷髅", "火烈鸟", "游戏手柄",
+        "便利店店员", "章鱼", "复活岛石像", "宇航飞船", "拉面", "金鱼缸", "高达模型", "招牌灯箱", "俄罗斯套娃", "咖啡杯",
+        "二维码", "无人机", "手", "时钟", "武士", "艺伎", "宇航服", "迪斯科球", "乐高小人", "潜水员",
+        "薛定谔的猫", "比特币", "显卡", "外星人尸体", "香蕉", "特朗普的发型", "蒙娜丽莎", "大卫雕像", "自由女神", "木乃伊",
+        "吸血鬼", "僵尸", "独角兽", "尼斯湖水怪", "克隆人", "人工智能", "黑客", "赛博格", "忍者", "相扑选手",
+        "鼻子", "假牙", "心脏", "肺", "脊椎骨", "胎儿", "DNA链", "病毒", "细菌", "细胞",
+        "脚", "耳朵", "嘴唇", "舌头", "屁股", "乳房", "生殖器(马赛克)", "便便", "苍蝇", "蚊子",
+        "蟑螂", "老鼠", "鸽子", "企鹅", "长颈鹿", "大象", "鲸鱼", "海豚", "鲨鱼", "鳄鱼",
+        "恐龙蛋", "外星蛋", "鸵鸟蛋", "鸡蛋", "鸭蛋", "鹌鹑蛋", "皮蛋", "咸鸭蛋", "茶叶蛋", "荷包蛋",
+        "汉堡包", "披萨", "热狗", "薯条", "可乐", "啤酒", "香烟", "雪茄", "大麻叶", "注射器",
+
+        // --- 复古名词 (10个) ---
+        "收音机", "电话亭", "打字机", "黑胶唱片", "左轮手枪", 
+        "电吉他", "凯迪拉克", "摩天轮", "旋转木马", "原子弹",
+
+        // --- 奇怪/超现实名词 (15个) ---
+        "防毒面具", "断掉的手指", "缸中之脑", "诅咒娃娃", "切尔诺贝利变异体",
+        "发霉的奶酪", "手术刀", "用过的创可贴", "无限猴子", "黑洞视界",
+        "克苏鲁触手", "铁处女(刑具)", "人体模特", "福尔马林罐子", "第三只眼",
+
+        // --- 艾尔登法环 & 只狼 特供 (10个) ---
+        "黄金树", "赐福点", "壶战士", "仿身泪滴", "暗月大剑",
+        "双指", "猩红腐败", "忍义手", "不死斩", "鬼佛"
+    ],
+
+    // 3. Action / 动作 (动词、交互、超现实行为)
+    col3: [
+        "正在洗澡", "在做手术", "在抽烟", "正在融化", "在跳舞", "正在爆炸", "在冥想", "在自我毁灭", "在玩滑板", "在写代码",
+        "在吃泡面", "在打麻将", "在玩手机", "正在分裂", "在漂浮", "在呕吐彩虹", "在祈祷", "在睡觉", "在排队核酸", "在送外卖",
+        "在举重", "在画画", "在弹吉他", "在被外星人绑架", "在进行光合作用", "在相亲", "在吵架", "在掉眼泪", "在充电", "在升级系统",
+        "在偷看", "在做瑜伽", "在蹦迪", "在打电话", "在奔跑", "在下坠", "在孵化", "在种树", "在喝咖啡", "在看报纸",
+        "在通过图灵测试", "在挖矿", "在被格式化", "在蓝屏", "在报错", "在死机", "在重启", "在更新", "在下载", "在上传",
+        "在被黑客攻击", "在被病毒感染", "在被删除", "在被复制", "在被粘贴", "在被剪切", "在被压缩", "在被解压", "在被加密", "在被解密",
+        "在吞噬自己", "在变成液态", "在变成气态", "在变成固态", "在变成等离子态", "在进行核聚变", "在进行核裂变", "在穿越虫洞", "在穿越时空", "在停止时间",
+        "在倒流时间", "在加速时间", "在减速时间", "在折叠空间", "在撕裂空间", "在创造宇宙", "在毁灭宇宙", "在观察你", "在模仿你", "在嘲笑你",
+        "在爱上你", "在杀你", "在救你", "在吃你", "在喝你", "在吸你", "在舔你", "在闻你", "在摸你", "在抱你",
+        "在亲你", "在咬你", "在踢你", "在打你", "在骂你", "在夸你", "在骗你", "在帮你", "在害你", "在等你"
+    ],
+
+    // 4. Mood / 状态 (情绪、氛围、副词)
+    col4: [
+        "眼神空洞地", "极其兴奋地", "漫不经心地", "绝望地", "优雅地", "笨拙地", "神圣地", "疯狂地", "孤独地", "色情地",
+        "阴阳怪气地", "充满希望地", "疲惫地", "愤怒地", "机械地", "偷偷摸摸地", "骄傲地", "含情脉脉地", "歇斯底里地", "冷静地",
+        "焦虑地", "快乐地", "悲伤地", "严肃地", "滑稽地", "神秘地", "浪漫地", "恐怖地", "迷茫地", "专注地",
+        "无聊地", "贪婪地", "虔诚地", "害羞地", "自信地", "懒洋洋地", "尴尬地", "痛苦地", "舒适地", "紧张地",
+        "哲学地", "数学地", "物理地", "化学地", "生物地", "历史地", "地理地", "文学地", "艺术地", "音乐地",
+        "宗教地", "政治地", "经济地", "法律地", "道德地", "伦理地", "逻辑地", "感性地", "理性地", "直觉地",
+        "潜意识地", "无意识地", "下意识地", "超意识地", "集体无意识地", "精神分裂地", "双重人格地", "多重人格地", "反社会地", "边缘型地",
+        "自恋地", "自卑地", "自负地", "自大地", "自私地", "无私地", "虚伪地", "真诚地", "善良地", "邪恶地",
+        "正义地", "非正义地", "自由地", "专制地", "民主地", "独裁地", "和平地", "暴力地", "温和地", "极端地",
+        "像个傻子一样", "像个天才一样", "像个疯子一样", "像个孩子一样", "像个老人一样", "像个男人一样", "像个女人一样", "像个动物一样", "像个机器一样", "像个神一样"
+    ],
+
+    // 5. Context / 时间地点 (场景、空间、维度)
+    col5: [
+        "在世界末日的超市", "在凌晨三点的东京", "在深海两万里", "在火星殖民地", "在老旧的电梯里", "在无人的高速公路上", "在巨大的培养皿里", "在你的梦里", "在拥挤的地铁上", "在悬崖边",
+        "在赛博朋克贫民窟", "在宜家样板间", "在游泳池底部", "在云端", "在沙漠中心", "在切尔诺贝利", "在只有黑白的世界", "在电子游戏里", "在月球背面", "在精神病院",
+        "在便利店门口", "在热带雨林", "在全息投影的舞台上", "在垃圾场", "在失重的空间站", "在巨大的微波炉里", "在电影院", "在手术台上", "在火锅里", "在显微镜下",
+        "在美术馆", "在废弃的游乐园", "在下水道", "在电脑主板上", "在冰箱里", "在火山口", "在万花筒里", "在镜子迷宫中", "在另外一个维度", "在你的手机屏幕里",
+        "在平行宇宙", "在黑洞视界", "在虫洞内部", "在量子领域", "在弦理论中", "在多维空间", "在虚拟现实", "在增强现实", "在混合现实", "在元宇宙",
+        "在区块链上", "在比特币网络里", "在以太坊网络里", "在暗网", "在深网", "在局域网", "在广域网", "在互联网", "在物联网", "在车联网",
+        "在你的大脑皮层", "在你的潜意识", "在你的回忆里", "在你的想象里", "在你的幻觉里", "在你的噩梦里", "在你的春梦里", "在你的白日梦里", "在你的前世", "在你的来世",
+        "在天堂", "在地狱", "在炼狱", "在伊甸园", "在极乐世界", "在瓦尔哈拉", "在奥林匹斯山", "在昆仑山", "在蓬莱仙岛", "在亚特兰蒂斯",
+        "在百慕大三角", "在51区", "在切尔诺贝利", "在福岛", "在广岛", "在长崎", "在庞贝古城", "在楼兰古国", "在玛雅金字塔", "在埃及金字塔",
+        "在泰坦尼克号上", "在诺亚方舟上", "在阿波罗11号上", "在旅行者1号上", "在哈勃望远镜上", "在韦伯望远镜上", "在国际空间站上", "在天宫空间站上", "在和平号空间站上", "在礼炮号空间站上"
+    ]
+};
+
+        let userDefinedState = [false, false, false, false, false, false];
+
+        // 输入检测
+        function handleInput(id) {
+            const input = document.getElementById(`input-${id}`);
+            const row = document.getElementById(`row-${id}`);
+            
+            if (input.value.trim() !== "") {
+                userDefinedState[id] = true;
+                row.classList.add('is-user-defined');
+            } else {
+                userDefinedState[id] = false;
+                row.classList.remove('is-user-defined');
+            }
+        }
+
+        // 重置
+        function resetAll() {
+            for (let i = 1; i <= 5; i++) {
+                const input = document.getElementById(`input-${i}`);
+                const row = document.getElementById(`row-${i}`);
+                input.value = "";
+                userDefinedState[i] = false;
+                row.classList.remove('is-user-defined');
+            }
+            document.getElementById('full-sentence').innerText = "";
+            document.getElementById('result-container').classList.remove('has-content');
+        }
+
+        // 生成
+        function spin() {
+            const duration = 500;
+            const intervalTime = 50;
+            let steps = duration / intervalTime;
+            let currentStep = 0;
+            const btn = document.querySelector('.btn-generate');
+            
+            btn.disabled = true;
+
+            const interval = setInterval(() => {
+                for(let i=1; i<=5; i++) {
+                    const input = document.getElementById(`input-${i}`);
+                    // 只动没有被用户锁定的行
+                    if (!userDefinedState[i]) {
+                        input.value = getRandom(data[`col${i}`]);
+                    }
+                }
+                
+                currentStep++;
+                if (currentStep >= steps) {
+                    clearInterval(interval);
+                    btn.disabled = false;
+                    updatePreview();
+                }
+            }, intervalTime);
+        }
+
+        function getRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+        function updatePreview() {
+            const vals = [];
+            for(let i=1; i<=5; i++) vals.push(document.getElementById(`input-${i}`).value);
+            const resultElement = document.getElementById('full-sentence');
+            const resultContainer = document.getElementById('result-container');
+            if(vals[0]) {
+                const resultText = `" 一个 ${vals[0]} ${vals[1]}，${vals[3]} ${vals[2]}，${vals[4]}。"`;
+                resultElement.innerText = resultText;
+                resultContainer.classList.add('has-content');
+            } else {
+                resultElement.innerText = '';
+                resultContainer.classList.remove('has-content');
+            }
+        }
+
+        function copyResult() {
+            const resultElement = document.getElementById('full-sentence');
+            const copyBtn = document.getElementById('copy-btn');
+            const text = resultElement.innerText;
+            
+            if (!text) return;
+            
+            // 复制到剪贴板
+            navigator.clipboard.writeText(text).then(() => {
+                // 显示复制成功反馈
+                const originalText = copyBtn.innerText;
+                copyBtn.innerText = '✓ 已复制 / Copied';
+                copyBtn.classList.add('copied');
+                
+                setTimeout(() => {
+                    copyBtn.innerText = originalText;
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                // 降级方案：使用传统方法
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.opacity = '0';
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    const originalText = copyBtn.innerText;
+                    copyBtn.innerText = '✓ 已复制 / Copied';
+                    copyBtn.classList.add('copied');
+                    setTimeout(() => {
+                        copyBtn.innerText = originalText;
+                        copyBtn.classList.remove('copied');
+                    }, 2000);
+                } catch (err) {
+                    console.error('复制失败', err);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+    </script>
+</body>
+</html>
